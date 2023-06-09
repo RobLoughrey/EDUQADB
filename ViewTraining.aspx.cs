@@ -3,10 +3,11 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Globalization;
 
 namespace EDU_QA_DB
 {
-    public partial class WebForm2 : System.Web.UI.Page
+    public partial class ViewTraining : System.Web.UI.Page
     {
         string myConnectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
 
@@ -19,10 +20,10 @@ namespace EDU_QA_DB
 
             if (!IsPostBack)
             {
-                if (Request.QueryString["ID"] != null)
+                if (!string.IsNullOrEmpty(Request.QueryString["ID"]))
                 {
                     int id = Convert.ToInt32(Request.QueryString["ID"]);
-                    string query = "SELECT T.DateofTraining, T.PDH, T.ContactHours, TT.Title, TT.Description, T.AuthCertRef, T.CreditsRefunds, T.EOB, T.GAM, T.Registration, T.ChargeCorrection, T.CustServ, T.EscChurn, T.Guarantors, T.Software, T.Coding, T.Denials, T.FinAssist, T.MDMC, T.Workqueues, T.Communications, T.DocsScanning, T.HAM, T.Notes, T.Coverage, T.ELMSProductivity, T.HIPAA, T.PaymentPostProc, T.Type " +
+                    string query = "SELECT T.DateofTraining, T.PDH, T.ContactHours, TT.Title, T.Description, T.AuthCertRef, T.CreditsRefunds, T.EOB, T.GAM, T.Registration, T.ChargeCorrection, T.CustServ, T.EscChurn, T.Guarantors, T.Software, T.Coding, T.Denials, T.FinAssist, T.MDMC, T.Workqueues, T.Communications, T.DocsScanning, T.HAM, T.Notes, T.Coverage, T.ELMSProductivity, T.HIPAA, T.PaymentPostProc, T.Type " +
                                     "FROM tblTrainings T " +
                                     "INNER JOIN tblAttendance A ON T.ID = A.TrainingAttended " +
                                     "INNER JOIN tblTrainingEventTitles TT ON T.Title = TT.ID " +
@@ -103,15 +104,15 @@ namespace EDU_QA_DB
                     
                 {
                     // Check the value of SessionSecurity and conditionally render the button
-                    int securityLevel = Convert.ToInt32(Session["sUserSecurity"]);
-                    if (securityLevel == 1 || securityLevel == 2)
-                        {
-                            Button btnUpdate = new Button();
-                            btnUpdate.ID = "btnUpdate";
-                            btnUpdate.Text = "Update Training";
-                            btnUpdate.Click += new EventHandler(btnUpdate_Click);
-                            form1.Controls.Add(btnUpdate);
-                        }
+                   // int securityLevel = Convert.ToInt32(Session["sUserSecurity"]);
+                   // if (!string.IsNullOrEmpty(Request.QueryString["ID"]) && (securityLevel == 1 || securityLevel == 2))
+                     //   {
+                        //    Button btnUpdate = new Button();
+                        //    btnUpdate.ID = "btnUpdate";
+                        //    btnUpdate.Text = "Update Training";
+                        //    btnUpdate.Click += new EventHandler(btnUpdate_Click);
+                        //    form1.Controls.Add(btnUpdate);
+                      //  }
                 }
                
             }
@@ -129,11 +130,11 @@ namespace EDU_QA_DB
 
             if (securityLevel == 1 || securityLevel == 2)
             {
-                string connString = ConfigurationManager.ConnectionStrings["EDU-QA DBConnectionString"].ConnectionString;
+                string connString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    string updateQuery = "UPDATE tblTrainings SET Title=@Title, " +
-                    "DateOfTraining=@DateOfTraining, PDH=@PDHValue, ContactHours=@ContactHours, " +
+                    string updateQuery = "UPDATE tblTrainings SET " +
+                    "DateOfTraining=@DateOfTraining, PDH=@PDH, ContactHours=@ContactHours, " +
                     "Description=@Description, AuthCertRef=@AuthCertsReferrals, CreditsRefunds=@CreditsRefunds, " +
                     "EOB=@EOB, GAM=@GuarantorAcctMaint, Registration=@Registration, " +
                     "ChargeCorrection=@ChargeCorrection, CustServ=@CustomerService, EscChurn=@EscalationAndChurn, " +
@@ -145,9 +146,9 @@ namespace EDU_QA_DB
                     SqlCommand command = new SqlCommand(updateQuery, conn);
 
                     // Set the parameters for the update query
-                    command.Parameters.AddWithValue("@DateOfTraining", txtDateOfTraining.Text);
-                    command.Parameters.AddWithValue("@PDH", txtPDH.Text);
-                    command.Parameters.AddWithValue("@ContactHours", txtContactHours.Text);
+                    command.Parameters.AddWithValue("@DateOfTraining", DateTime.ParseExact(txtDateOfTraining.Text, "MM/dd/yyyy", CultureInfo.InvariantCulture));
+                    command.Parameters.AddWithValue("@PDH", Math.Round(float.Parse(txtPDH.Text), 2));
+                    command.Parameters.AddWithValue("@ContactHours", Math.Round(float.Parse(txtContactHours.Text), 2));
                     command.Parameters.AddWithValue("@Description", txtDescription.Text);
                     command.Parameters.AddWithValue("@TrainingID", Request.QueryString["ID"]);
 
@@ -179,15 +180,27 @@ namespace EDU_QA_DB
                     command.Parameters.AddWithValue("@HIPAA", HIPAA.Checked);
                     command.Parameters.AddWithValue("@PaymentPostProc", PaymentPostProc.Checked);
 
-                    conn.Open();
-                    // Execute the query
-                    int rowsAffected = command.ExecuteNonQuery();
+                    try
+                    {
+                        conn.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        conn.Close();
 
-                    // Close the connection
-                    conn.Close();
-
-                    // Redirect back to the view page
-                    Response.Redirect("ViewTraining.aspx?TrainingID=" + Request.QueryString["TrainingID"]);
+                        if (rowsAffected > 0)
+                        { // Update successful, redirect back to the view page
+                            lblMessage.Text = "Record has been updated";
+                        }
+                        else
+                        {
+                            // No rows affected, display an error message
+                            lblMessage.Text = "No records were updated.";
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        // An error occurred during the update process, display the error message
+                        lblMessage.Text = "Error: " + ex.Message;
+                    }
                 }
             }
             else

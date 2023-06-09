@@ -11,7 +11,7 @@ namespace EDU_QA_DB
 {
 
 
-    public partial class WebForm2
+    public partial class ViewTraining
     {
 
         /// <summary>
@@ -346,6 +346,15 @@ namespace EDU_QA_DB
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnMainMenu;
+
+        /// <summary>
+        /// btnUpdate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnUpdate;
 
         /// <summary>
         /// lblMessage control.

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ViewTraining.aspx.cs" Inherits="EDU_QA_DB.WebForm2" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ViewTraining.aspx.cs" Inherits="EDU_QA_DB.ViewTraining"%>
 
 <!DOCTYPE html>
 
@@ -92,8 +92,35 @@
         <br />
         <br />
         <asp:Button ID="btnMainMenu" runat="server" Text="Main Menu" OnClick="btnMainMenu_Click" />
+            <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="Update Event" />
         </div>
     </form>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <asp:Label ID="lblMessage" runat="server" Text=""></asp:Label>
 </body>
 </html>
