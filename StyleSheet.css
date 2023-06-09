@@ -1,0 +1,137 @@
+﻿.container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 10px;
+}
+
+fieldset {
+    margin: 2em 0;
+    padding: 1em 2em;
+    border: solid 1px #ccc;
+    border-radius: 6px;
+    min-width: 200px;
+}
+
+legend {
+    font-size: 1.25em;
+    padding: 0 .25em;
+    color: #000000
+}
+
+label {
+    display: inline;
+    margin-top: 1em;
+}
+
+    label:first-of-type {
+        margin-top: 0;
+    }
+
+.form-label {
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.form-field {
+    display: inline-block;
+    width: 200px;
+}
+
+.main-button {
+    width: 125px !important;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #00AF66;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 2px 2px;
+    cursor: pointer
+}
+
+.main-mini-button {
+    width: 32px;
+    height: 25px;
+    padding: 5px;
+    box-sizing: border-box;
+    background-color: #63666A;
+    color: white;
+    border: thin;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 5px 2px 0px 0px;
+    cursor: pointer
+}
+
+.main-dd {
+    width: 145px;
+}
+
+.main-text {
+    width: 145px;
+}
+#imgUIHCLogo {
+    width: 15%;
+}
+
+/* Define styles for the header and footer */
+#header {
+    background-color: #FFCD00;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+#side-panel {
+    width: 150px;
+    height: 100%;
+    background-color: #ccc;
+    float: left;
+    border: 1px solid black;
+    border-top: none;
+    padding: 10px;
+}
+.right-side-panel {
+    width: 250px;
+    background-color: #EAEAEA;
+    color: #333333;
+    padding: 10px;
+    margin-left: 20px;
+    float: right;
+}
+
+#main-content {
+    float:left;
+    margin-left: 10px; /* account for the side panel width plus some padding */
+    padding: 10px;
+    background-color: #fff;
+}
+
+.title-cell {
+    padding-left: 3px;
+    position: relative;
+}
+
+.title-cell::after {
+  content: "";
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  font-size: 0.8em;
+}
+
+.title-cell.asc::after {
+  content: "▲";
+}
+
+.title-cell.desc::after {
+  content: "▼";
+}
