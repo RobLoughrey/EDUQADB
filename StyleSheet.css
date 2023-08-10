@@ -4,34 +4,13 @@
     padding: 10px;
 }
 
+
 fieldset {
-    margin: 2em 0;
-    padding: 1em 2em;
     border: solid 1px #ccc;
     border-radius: 6px;
+    margin: 2em 0;
     min-width: 200px;
-}
-
-legend {
-    font-size: 1.25em;
-    padding: 0 .25em;
-    color: #000000
-}
-
-label {
-    display: inline;
-    margin-top: 1em;
-}
-
-    label:first-of-type {
-        margin-top: 0;
-    }
-
-.form-label {
-    display: inline-block;
-    width: 120px;
-    text-align: right;
-    padding-right: 10px;
+    padding: 1em 2em;
 }
 
 .form-field {
@@ -39,99 +18,167 @@ label {
     width: 200px;
 }
 
-.main-button {
-    width: 125px !important;
-    padding: 10px;
-    box-sizing: border-box;
-    background-color: #00AF66;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
+.form-label {
     display: inline-block;
-    font-size: 12px;
-    margin: 2px 2px;
-    cursor: pointer
+    padding-right: 10px;
+    text-align: right;
+    width: 120px;
 }
 
-.main-mini-button {
-    width: 32px;
-    height: 25px;
-    padding: 5px;
-    box-sizing: border-box;
-    background-color: #63666A;
-    color: white;
-    border: thin;
+#header {
+    background-color: #FFCD00;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+#imgUIHCLogo {
+    width: 15%;
+}
+
+input[type="radio"] {
+}
+
+label {
+    display: inline;
+    margin-bottom: 5px;
+    margin-top: 1em;
+}
+
+    label:first-of-type {
+        margin-top: 0;
+    }
+
+legend {
+    color: #000000;
+    font-size: 1.25em;
+    padding: 0 .25em;
+}
+
+.logout-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.main-button {
+    background-color: #00AF66;
+    border: none;
     border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
     display: inline-block;
     font-size: 12px;
-    margin: 5px 2px 0px 0px;
-    cursor: pointer
+    height: 25px;
+    margin: 2px 2px;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    width: 125px;
+}
+
+#main-content {
+    background-color: #fff;
+    float: left;
+    margin-left: 10px;
+    padding: 10px;
 }
 
 .main-dd {
     width: 145px;
 }
 
+.main-mini-button {
+    background-color: #63666A;
+    border: thin;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    height: 25px;
+    margin: 5px 2px 0px 0px;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    width: 32px;
+}
+
 .main-text {
     width: 145px;
 }
-#imgUIHCLogo {
-    width: 15%;
+
+.radio-label {
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 10px;
+    position: relative;
+    padding-left: 15px;
 }
 
-/* Define styles for the header and footer */
-#header {
-    background-color: #FFCD00;
+    .radio-label input[type="radio"]:checked + .radio-label span {
+        color: #fff;
+    }
+
+    .radio-label span {
+        color: #333333;
+        font-family: Calibri, Arial, sans-serif;
+        font-size: 12px;
+    }
+
+.remove-button {
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.right-side-panel {
+    background-color: #EAEAEA;
+    color: #333333;
+    float: right;
+    margin-left: 20px;
     padding: 10px;
-    border: 1px solid black;
+    width: 350px;
 }
 
 #side-panel {
-    width: 150px;
-    height: 100%;
     background-color: #ccc;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-top-color: inherit;
+    border-top-style: none;
+    border-top-width: medium;
     float: left;
-    border: 1px solid black;
-    border-top: none;
+    height: 900px;
     padding: 10px;
-}
-.right-side-panel {
-    width: 250px;
-    background-color: #EAEAEA;
-    color: #333333;
-    padding: 10px;
-    margin-left: 20px;
-    float: right;
+    width: 150px;
 }
 
-#main-content {
-    float:left;
-    margin-left: 10px; /* account for the side panel width plus some padding */
-    padding: 10px;
-    background-color: #fff;
-}
+    #side-panel h2 {
+        margin-bottom: 1px;
+    }
 
 .title-cell {
     padding-left: 3px;
     position: relative;
 }
 
-.title-cell::after {
-  content: "";
-  position: absolute;
-  right: 0.5em;
-  top: 0.5em;
-  font-size: 0.8em;
-}
+    .title-cell.asc::after {
+        content: "▲";
+        font-size: 0.8em;
+        position: absolute;
+        right: 0.5em;
+        top: 0.5em;
+    }
 
-.title-cell.asc::after {
-  content: "▲";
-}
-
-.title-cell.desc::after {
-  content: "▼";
-}
+    .title-cell.desc::after {
+        content: "▼";
+        font-size: 0.8em;
+        position: absolute;
+        right: 0.5em;
+        top: 0.5em;
+    }

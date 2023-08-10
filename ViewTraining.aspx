@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>View Training</title>
@@ -32,7 +33,26 @@
     <form id="form1" runat="server">
         <div class="right-side-panel">
             <h3>Attendees</h3>
-            <asp:PlaceHolder ID="phAttendees" runat="server"></asp:PlaceHolder>
+            <h3>Add Attendee</h3>
+            <asp:DropDownList ID="ddlUsers" runat="server" DataSourceID="SqlDataSourceUsers" DataTextField="UserName" DataValueField="ID" AppendDataBoundItems="true">
+                <asp:ListItem Text="Select a User" Value="" />
+                </asp:DropDownList>
+            <asp:DropDownList ID="ddlRoles" runat="server">
+                <asp:ListItem Text="Select a Role" Value="" />
+                <asp:ListItem Text="Trainer" Value="1" />
+                <asp:ListItem Text="Assit. Trainer" Value="2" />
+                <asp:ListItem Text="Attendee" Value="3" Selected="True" />
+            </asp:DropDownList>
+        <asp:Button ID="btnAddAttendee" runat="server" Text="Add Attendee" OnClick="btnAddAttendee_Click" />
+            <asp:PlaceHolder ID="phAttendees" runat="server">
+                <asp:Table ID="attendeesTable" CssClass="attendees-table" runat="server">
+                    <asp:TableHeaderRow>
+                        <asp:TableHeaderCell>Name</asp:TableHeaderCell>
+                        <asp:TableHeaderCell>Role</asp:TableHeaderCell>
+                        <asp:TableHeaderCell>Action</asp:TableHeaderCell>
+                    </asp:TableHeaderRow>
+                </asp:Table>
+            </asp:PlaceHolder>
         </div>
         <div class="formbody">
         <asp:Label ID="lblTitle" runat="server" Text="Title:"></asp:Label>
@@ -92,7 +112,7 @@
         <br />
         <br />
         <asp:Button ID="btnMainMenu" runat="server" Text="Main Menu" OnClick="btnMainMenu_Click" />
-            <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="Update Event" />
+        <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="Update Event" />
         </div>
     </form>
     <br />
@@ -123,4 +143,7 @@
     <br />
     <asp:Label ID="lblMessage" runat="server" Text=""></asp:Label>
 </body>
+    <asp:SqlDataSource ID="SqlDataSourceUsers" runat="server" ConnectionString="<%$ ConnectionStrings:MyConnectionString %>"
+    SelectCommand="SELECT ID, UserName FROM tblUser">
+</asp:SqlDataSource>
 </html>

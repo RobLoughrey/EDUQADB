@@ -181,7 +181,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MSSQLEDQADB.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="WebForm1.aspx" />
+    <Content Include="QA.aspx" />
     <Content Include="ViewTraining.aspx" />
     <EntityDeploy Include="MSSQLEDQADB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -316,12 +316,12 @@
     <Compile Include="CreateUser.aspx.designer.cs">
       <DependentUpon>CreateUser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="QA.aspx.cs">
+      <DependentUpon>QA.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="QA.aspx.designer.cs">
+      <DependentUpon>QA.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewTraining.aspx.cs">
       <DependentUpon>ViewTraining.aspx</DependentUpon>

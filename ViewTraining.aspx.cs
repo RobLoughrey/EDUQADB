@@ -71,10 +71,11 @@ namespace EDU_QA_DB
                                 PaymentPostProc.Checked = (bool)reader["PaymentPostProc"];
                             }
                             // Get the list of attendees
-                            query = "SELECT U.LastName + ', ' + U.FirstName AS Name, A.Role " +
+                            query = "SELECT U.LastName + ', ' + U.FirstName AS Name, A.Role, " + "A.ID As AttendeeID " +
                                     "FROM tblAttendance A " +
                                     "INNER JOIN tblUser U ON A.UserName = U.ID " +
-                                    "WHERE A.TrainingAttended = @ID";
+                                    "WHERE A.TrainingAttended = @ID " +
+                                    "ORDER BY Name";
                             reader.Close(); // Close the first SqlDataReader before executing the second query
                             using (SqlCommand cmdAttendees = new SqlCommand(query, conn))
                             {
@@ -83,41 +84,67 @@ namespace EDU_QA_DB
 
                                 // Create a table to display the attendees
                                 LiteralControl literal = new LiteralControl();
-                                literal.Text = "<table><thead><tr><th>Name</th><th>Role</th></tr></thead><tbody>";
+                                literal.Text = "<table><thead><tr><th>Name</th><th>Role</th><th>Action</th></tr></thead><tbody>";
 
                                 while (readerAttendees.Read())
                                 {
                                     string name = readerAttendees["Name"].ToString();
                                     string role = readerAttendees["Role"].ToString();
-                                    literal.Text += "<tr><td>" + name + "</td><td>" + role + "</td></tr>";
+                                    int attendeeID = Convert.ToInt32(readerAttendees["AttendeeID"]);
+
+                                    TableRow row = new TableRow();
+
+                                    TableCell nameCell = new TableCell();
+                                    nameCell.Text = name;
+                                    row.Cells.Add(nameCell);
+
+                                    TableCell roleCell = new TableCell();
+                                    roleCell.Text = role;
+                                    row.Cells.Add(roleCell);
+
+                                    TableCell buttonCell = new TableCell();
+                                    Button removeButton = new Button();
+                                    removeButton.ID = "btnRemove_" + attendeeID;
+                                    removeButton.Text = "Remove";
+                                    removeButton.CssClass = "remove-button";
+                                    removeButton.CommandArgument = attendeeID.ToString();
+                                    removeButton.Click += RemoveAttendee_Click;
+                                    buttonCell.Controls.Add(removeButton);
+                                    row.Cells.Add(buttonCell);
+
+                                    attendeesTable.Rows.Add(row);
                                 }
 
-                                literal.Text += "</tbody></table>";
-                                phAttendees.Controls.Add(literal);
+                                phAttendees.Controls.Add(attendeesTable);
 
                                 readerAttendees.Close();
                             }
-                        reader.Close();
+                            reader.Close();
                         }
                     }
                 }
-                    
-                {
-                    // Check the value of SessionSecurity and conditionally render the button
-                   // int securityLevel = Convert.ToInt32(Session["sUserSecurity"]);
-                   // if (!string.IsNullOrEmpty(Request.QueryString["ID"]) && (securityLevel == 1 || securityLevel == 2))
-                     //   {
-                        //    Button btnUpdate = new Button();
-                        //    btnUpdate.ID = "btnUpdate";
-                        //    btnUpdate.Text = "Update Training";
-                        //    btnUpdate.Click += new EventHandler(btnUpdate_Click);
-                        //    form1.Controls.Add(btnUpdate);
-                      //  }
-                }
-               
+
             }
         }
-
+        protected void RemoveAttendee_Click(object sender, EventArgs e)
+        {
+            Button btnRemove = (Button)sender;
+            int attendeeIDToRemove = Convert.ToInt32(btnRemove.CommandArgument);
+            RemoveAttendeeFromAttendance(attendeeIDToRemove);
+            
+        }
+        protected void RemoveAttendeeFromAttendance(int attendeeID)
+        {
+            using (SqlConnection conn = new SqlConnection(myConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM tblAttendance WHERE ID = @AttendeeID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@AttendeeID", attendeeID);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
         protected void btnMainMenu_Click(object sender, EventArgs e)
         {
             // Redirect to MainPage.aspx without updating the user data
@@ -207,6 +234,39 @@ namespace EDU_QA_DB
             {
                 // Display an error message if the user does not have sufficient security level
                 lblMessage.Text = "You do not have sufficient permissions to update this record.";
+            }
+        }
+
+        protected void btnAddAttendee_Click(object sender, EventArgs e)
+        {
+            int classID = Convert.ToInt32(Request.QueryString["ID"]);
+            int userID = Convert.ToInt32(ddlUsers.SelectedValue);
+            string role = ddlRoles.SelectedValue;
+
+            using (SqlConnection conn = new SqlConnection(myConnectionString))
+            {
+                string insertQuery = "INSERT INTO tblAttendance (TrainingAttended, UserName, Role) VALUES (@ClassID, @UserID, @Role)";
+                using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ClassID", classID);
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    cmd.Parameters.AddWithValue("@Role", role);
+
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                    if (rowsAffected > 0)
+                    {
+                        lblMessage.Text = "Attendee added successfully.";
+                        // Refresh the attendees list
+                        Response.Redirect(Request.RawUrl);
+                    }
+                    else
+                    {
+                        lblMessage.Text = "Error adding attendee.";
+                    }
+                }
             }
         }
     }

@@ -22,8 +22,12 @@ namespace EDU_QA_DB
 
             if (!IsPostBack)
             {
-                txtStartDate.Text = DateTime.Today.AddMonths(-1).ToShortDateString();
-                txtEndDate.Text = DateTime.Today.ToShortDateString();
+                DateTime firstDayOfCurrentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                DateTime lastDayOfPreviousMonth = firstDayOfCurrentMonth.AddDays(-1);
+                DateTime firstDayOfPreviousMonth = new DateTime(lastDayOfPreviousMonth.Year, lastDayOfPreviousMonth.Month, 1);
+
+                txtStartDate.Text = firstDayOfPreviousMonth.ToShortDateString();
+                txtEndDate.Text = lastDayOfPreviousMonth.ToShortDateString();
             }
 
             int sUserId = Convert.ToInt32(Session["sUserId"]);
@@ -137,22 +141,7 @@ namespace EDU_QA_DB
             ddlUsers.SelectedIndex = -1;
         }
 
-        protected void btnEditUser_Click(object sender, EventArgs e)
-        {
-            // Get the selected user ID
-            int userId;
-            if (int.TryParse(ddlUsers.SelectedValue, out userId))
-            {
-                // Store the selected user ID in the session variable
-                Session["SelectedUserId"] = userId;
-                Response.Redirect("EditUser.aspx");
-            }
-        }
-
-        protected void btnAddUser_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("CreateUser.aspx");
-        }
+       
 
         protected void ddlTeams_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -189,6 +178,44 @@ namespace EDU_QA_DB
                 phContent.Controls.Add(gvTrainings);
             }
         }
+        protected void btnSearchQA_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("QA.aspx");
+        }
+        protected void btnAddTrain_Click(object sender, EventArgs e)
+        {
 
+        }
+        protected void btnAddQA_Click(object sender, EventArgs e)
+        {
+
+        }
+        protected void btnAddDocScan_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnQAProd_Click(object sender, EventArgs e)
+        { 
+
+        }
+        protected void btnEduProd_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnAddUser_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("CreateUser.aspx");
+        }
+        
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            // Clear all session states
+            Session.Clear();
+
+            // Redirect to the login page
+            Response.Redirect("Login.aspx");
+        }
     }
 }

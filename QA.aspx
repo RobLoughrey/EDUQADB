@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MainPage.aspx.cs" Inherits="EDU_QA_DB.MainPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="QA.aspx.cs" Inherits="EDU_QA_DB.QA" %>
 
 <!DOCTYPE html>
 
@@ -38,27 +38,21 @@
                     <asp:Button ID="btnSetDateM0" runat="server" Text="M-0" OnClick="btnSetDateM0_Click" CssClass="main-mini-button" />
                     <asp:Button ID="btnSetDateM1" runat="server" Text="M-1" OnClick="btnSetDateM1_Click" CssClass="main-mini-button" />
                 <br />
-                <% if (Session["sUserSecurity"].ToString() == "1" || Session["sUserSecurity"].ToString() == "2") { %>
-                        <asp:Button ID="btnMyTraining" runat="server" Text="My Training" CssClass="main-button" OnClick="btnMyTraining_Click" />
-                        <asp:Button ID="btnMyQA" runat="server" Text="My QA's" CssClass="main-button" OnClick="btnMyTraining_Click" />
-                    <h2><asp:Label ID="lblReportingButtons" runat="server" Text="Reporting"></asp:Label></h2>
-                        <asp:Button ID="btnSearchTrainings" runat="server" Text="Search Trainings" OnClick="btnSearchTrainings_Click" CssClass="main-button" />
-                        <asp:Button ID="btnSearchQA" runat="server" Text="Search QA's" OnClick="btnSearchQA_Click" CssClass="main-button" />
-                <% } %>            
-                <% if (Session["sUserSecurity"].ToString() == "1"|| Session["sUserSecurity"].ToString() == "2") { %>
-                    <h2><asp:Label ID="lblEDQAButtons" runat="server" Text="Edu & QA"></asp:Label></h2>
-                        <asp:Button ID="btnAddTrain" runat="server" Text="New Training Event" OnClick="btnAddTrain_Click" CssClass="main-button" />
-                        <asp:Button ID="btnAddQA" runat="server" Text="New QA" OnClick="btnAddQA_Click" CssClass="main-button" />
-                        <asp:Button ID="btnAddDocScan" runat="server" Text="New Doc Scan QA" OnClick="btnAddDocScan_Click" CssClass="main-button" />
-                    <% } %>
-                <% if (Session["sUserSecurity"].ToString() == "1"|| Session["sUserSecurity"].ToString() == "2") { %>
-                    <h2><asp:Label ID="lblAdmin" runat="server" Text="Admin"></asp:Label></h2>
-                        <asp:Button ID="btnQAProd" runat="server" Text="QA Productivity" OnClick="btnQAProd_Click" CssClass="main-button" />
-                        <asp:Button ID="btnEduProd" runat="server" Text="Edu Productivity" OnClick="btnEduProd_Click" CssClass="main-button" />
-                        <asp:Button ID="Button1" runat="server" Text="User List" OnClick="btnGetUsers_Click" CssClass="main-button" />
-                        <asp:Button ID="Button3" runat="server" Text="Add User" OnClick="btnAddUser_Click" CssClass="main-button" />
-                    <% } %>
-                <br />
+            <% if (Session["sUserSecurity"].ToString() == "1" || Session["sUserSecurity"].ToString() == "2") { %>
+                    <asp:RadioButton ID="flgEdOpp" runat="server" Text="Edu Opp Only"/><br />        
+                    <asp:RadioButton ID="flgFinalized" runat="server" Text="Not Finalized"/><br />
+                    <asp:RadioButton ID="flgApproved" runat="server" Text="Not Approved"/><br />
+                    <asp:RadioButton ID="flgSigned" runat="server" Text="Not Signed" /><br />
+                    <asp:RadioButton ID="flgFYI" runat="server" Text="FYI Only"/><br />
+                    <asp:RadioButton ID="flgOTJ" runat="server" Text="OTJ Only"/><br />
+                    <asp:RadioButton ID="flgDD" runat="server" Text="Deep Dive Only"/><br />
+                    <asp:RadioButton ID="flgHH" runat="server" Text="Helpful Hints Only"/><br />
+                    <asp:RadioButton ID="flgExpUnc" runat="server" Text="Exp Unclear Only"/><br />
+                    <asp:RadioButton ID="flgCN" runat="server" Text="Corr. Needed Only"/><br />
+                    <asp:RadioButton ID="flgCRD" runat="server" Text="Disscuss with CRD"/><br />
+                    <asp:RadioButton ID="flgREQIP" runat="server" Text="REQIP Complete"/><br />
+                    <asp:Button ID="btnSearchQA" runat="server" Text="Search QA's" OnClick="btnSearchQA_Click" CssClass="main-button" />
+             <% } %>
         </div>
         <div id="main-content">
             <asp:Label ID="lblContent" runat="server"></asp:Label>
