@@ -34,7 +34,7 @@
         <div class="right-side-panel">
             <h3>Attendees</h3>
             <h3>Add Attendee</h3>
-            <asp:DropDownList ID="ddlUsers" runat="server" DataSourceID="SqlDataSourceUsers" DataTextField="UserName" DataValueField="ID" AppendDataBoundItems="true">
+            <asp:DropDownList ID="ddlUsers" runat="server" DataSourceID="SqlDataSourceUsers" DataTextField="FullName" DataValueField="ID" AppendDataBoundItems="true">
                 <asp:ListItem Text="Select a User" Value="" />
                 </asp:DropDownList>
             <asp:DropDownList ID="ddlRoles" runat="server">
@@ -142,8 +142,9 @@
     <br />
     <br />
     <asp:Label ID="lblMessage" runat="server" Text=""></asp:Label>
+    <asp:Literal ID="queryLiteral" runat="server"></asp:Literal>
 </body>
     <asp:SqlDataSource ID="SqlDataSourceUsers" runat="server" ConnectionString="<%$ ConnectionStrings:MyConnectionString %>"
-    SelectCommand="SELECT ID, UserName FROM tblUser">
-</asp:SqlDataSource>
+        SelectCommand="SELECT ID, LastName, FirstName, LastName + ', ' + FirstName AS FullName FROM tblUser">
+    </asp:SqlDataSource>
 </html>

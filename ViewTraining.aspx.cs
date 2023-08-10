@@ -13,13 +13,13 @@ namespace EDU_QA_DB
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["LoggedIn"] == null || (bool)Session["LoggedIn"] == false)
-            {
-                Response.Redirect("Login.aspx");
-            }
-
             if (!IsPostBack)
             {
+                if (Session["LoggedIn"] == null || (bool)Session["LoggedIn"] == false)
+                {
+                    Response.Redirect("Login.aspx");
+                }
+
                 if (!string.IsNullOrEmpty(Request.QueryString["ID"]))
                 {
                     int id = Convert.ToInt32(Request.QueryString["ID"]);
@@ -28,7 +28,6 @@ namespace EDU_QA_DB
                                     "INNER JOIN tblAttendance A ON T.ID = A.TrainingAttended " +
                                     "INNER JOIN tblTrainingEventTitles TT ON T.Title = TT.ID " +
                                     "WHERE T.ID = @ID";
-
 
                     using (SqlConnection conn = new SqlConnection(myConnectionString))
                     {
@@ -70,68 +69,93 @@ namespace EDU_QA_DB
                                 HIPAA.Checked = (bool)reader["HIPAA"];
                                 PaymentPostProc.Checked = (bool)reader["PaymentPostProc"];
                             }
-                            // Get the list of attendees
-                            query = "SELECT U.LastName + ', ' + U.FirstName AS Name, A.Role, " + "A.ID As AttendeeID " +
-                                    "FROM tblAttendance A " +
-                                    "INNER JOIN tblUser U ON A.UserName = U.ID " +
-                                    "WHERE A.TrainingAttended = @ID " +
-                                    "ORDER BY Name";
-                            reader.Close(); // Close the first SqlDataReader before executing the second query
-                            using (SqlCommand cmdAttendees = new SqlCommand(query, conn))
-                            {
-                                cmdAttendees.Parameters.AddWithValue("@ID", id);
-                                SqlDataReader readerAttendees = cmdAttendees.ExecuteReader();
-
-                                // Create a table to display the attendees
-                                LiteralControl literal = new LiteralControl();
-                                literal.Text = "<table><thead><tr><th>Name</th><th>Role</th><th>Action</th></tr></thead><tbody>";
-
-                                while (readerAttendees.Read())
-                                {
-                                    string name = readerAttendees["Name"].ToString();
-                                    string role = readerAttendees["Role"].ToString();
-                                    int attendeeID = Convert.ToInt32(readerAttendees["AttendeeID"]);
-
-                                    TableRow row = new TableRow();
-
-                                    TableCell nameCell = new TableCell();
-                                    nameCell.Text = name;
-                                    row.Cells.Add(nameCell);
-
-                                    TableCell roleCell = new TableCell();
-                                    roleCell.Text = role;
-                                    row.Cells.Add(roleCell);
-
-                                    TableCell buttonCell = new TableCell();
-                                    Button removeButton = new Button();
-                                    removeButton.ID = "btnRemove_" + attendeeID;
-                                    removeButton.Text = "Remove";
-                                    removeButton.CssClass = "remove-button";
-                                    removeButton.CommandArgument = attendeeID.ToString();
-                                    removeButton.Click += RemoveAttendee_Click;
-                                    buttonCell.Controls.Add(removeButton);
-                                    row.Cells.Add(buttonCell);
-
-                                    attendeesTable.Rows.Add(row);
-                                }
-
-                                phAttendees.Controls.Add(attendeesTable);
-
-                                readerAttendees.Close();
-                            }
                             reader.Close();
                         }
                     }
                 }
-
             }
+
+                // Get the list of attendees
+                int classID = Convert.ToInt32(Request.QueryString["ID"]);
+                string attendeeQuery = "SELECT U.LastName + ', ' + U.FirstName AS Name, A.Role, A.ID AS AttendeeID " +
+                                       "FROM tblAttendance A " +
+                                       "INNER JOIN tblUser U ON A.UserName = U.ID " +
+                                       "WHERE A.TrainingAttended = @ClassID " +
+                                       "ORDER BY Name";
+
+                using (SqlConnection conn = new SqlConnection(myConnectionString))
+                {
+                    using (SqlCommand cmdAttendees = new SqlCommand(attendeeQuery, conn))
+                    {
+                        cmdAttendees.Parameters.AddWithValue("@ClassID", classID);
+                        conn.Open();
+                        SqlDataReader readerAttendees = cmdAttendees.ExecuteReader();
+
+                        // Create a table to display the attendees
+                        Table attendeesTable = new Table();
+                        attendeesTable.CssClass = "attendees-table"; // Set CSS class for styling
+
+                        TableHeaderRow headerRow = new TableHeaderRow();
+                        TableHeaderCell nameHeader = new TableHeaderCell();
+                        TableHeaderCell roleHeader = new TableHeaderCell();
+                        TableHeaderCell actionHeader = new TableHeaderCell();
+                        nameHeader.Text = "Name";
+                        roleHeader.Text = "Role";
+                        actionHeader.Text = "Action";
+                        headerRow.Cells.Add(nameHeader);
+                        headerRow.Cells.Add(roleHeader);
+                        headerRow.Cells.Add(actionHeader);
+                        attendeesTable.Rows.Add(headerRow);
+
+                        while (readerAttendees.Read())
+                        {
+                            string name = readerAttendees["Name"].ToString();
+                            string role = readerAttendees["Role"].ToString();
+                            int attendeeID = Convert.ToInt32(readerAttendees["AttendeeID"]);
+
+                            TableRow row = new TableRow();
+
+                            TableCell nameCell = new TableCell();
+                            nameCell.Text = name;
+                            row.Cells.Add(nameCell);
+
+                            TableCell roleCell = new TableCell();
+                            roleCell.Text = role;
+                            row.Cells.Add(roleCell);
+
+                            TableCell buttonCell = new TableCell();
+                            Button removeButton = new Button();
+                            removeButton.ID = "btnRemove_" + attendeeID;
+                            removeButton.Text = "Remove";
+                            removeButton.CssClass = "remove-button";
+                            removeButton.CommandArgument = attendeeID.ToString();
+                            removeButton.Click += RemoveAttendee_Click;
+                            buttonCell.Controls.Add(removeButton);
+                            row.Cells.Add(buttonCell);
+
+                            attendeesTable.Rows.Add(row);
+                        }
+
+                        phAttendees.Controls.Add(attendeesTable);
+
+                        readerAttendees.Close();
+                    }
+                }
+            
         }
+    
+
         protected void RemoveAttendee_Click(object sender, EventArgs e)
         {
+            // When Remove Attendee is clicked execute the RemoveAttendeeFromAttendance method
+            // getting the Attendance ID from the table. 
             Button btnRemove = (Button)sender;
             int attendeeIDToRemove = Convert.ToInt32(btnRemove.CommandArgument);
             RemoveAttendeeFromAttendance(attendeeIDToRemove);
-            
+
+            //Refresh the Current Page
+            Response.Redirect(Request.RawUrl);
+
         }
         protected void RemoveAttendeeFromAttendance(int attendeeID)
         {
@@ -152,91 +176,108 @@ namespace EDU_QA_DB
         }
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
-            // Check security level before allowing update
-            int securityLevel = Convert.ToInt32(Session["sUserSecurity"]);
+                // Check security level before allowing update
+                int securityLevel = Convert.ToInt32(Session["sUserSecurity"]);
 
-            if (securityLevel == 1 || securityLevel == 2)
-            {
-                string connString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connString))
+                if (securityLevel == 1 || securityLevel == 2)
                 {
-                    string updateQuery = "UPDATE tblTrainings SET " +
-                    "DateOfTraining=@DateOfTraining, PDH=@PDH, ContactHours=@ContactHours, " +
-                    "Description=@Description, AuthCertRef=@AuthCertsReferrals, CreditsRefunds=@CreditsRefunds, " +
-                    "EOB=@EOB, GAM=@GuarantorAcctMaint, Registration=@Registration, " +
-                    "ChargeCorrection=@ChargeCorrection, CustServ=@CustomerService, EscChurn=@EscalationAndChurn, " +
-                    "Guarantors=@Guarantors, Software=@Software, Coding=@Coding, Denials=@Denials, " +
-                    "FinAssist=@FinancialAssistance, MDMC=@MediareMedicaid, Workqueues=@Workqueues, " +
-                    "Communications=@Communications, DocsScanning=@DocumentsScanning, HAM=@HospitalAcctMaint, " +
-                    "Notes=@Notes, Coverage=@Coverage, ELMSProductivity=@ELMSProductivity, HIPAA=@HIPAA, " +
-                    "PaymentPostProc=@PaymentPostProc WHERE ID=@TrainingID";
-                    SqlCommand command = new SqlCommand(updateQuery, conn);
-
-                    // Set the parameters for the update query
-                    command.Parameters.AddWithValue("@DateOfTraining", DateTime.ParseExact(txtDateOfTraining.Text, "MM/dd/yyyy", CultureInfo.InvariantCulture));
-                    command.Parameters.AddWithValue("@PDH", Math.Round(float.Parse(txtPDH.Text), 2));
-                    command.Parameters.AddWithValue("@ContactHours", Math.Round(float.Parse(txtContactHours.Text), 2));
-                    command.Parameters.AddWithValue("@Description", txtDescription.Text);
-                    command.Parameters.AddWithValue("@TrainingID", Request.QueryString["ID"]);
-
-                    command.Parameters.AddWithValue("@AuthCertsReferrals", AuthCertRef.Checked);
-                    command.Parameters.AddWithValue("@CreditsRefunds", CreditsRefunds.Checked);
-                    command.Parameters.AddWithValue("@EOB", EOB.Checked);
-                    command.Parameters.AddWithValue("@GuarantorAcctMaint", GAM.Checked);
-                    command.Parameters.AddWithValue("@Registration", Registration.Checked);
-
-                    command.Parameters.AddWithValue("@ChargeCorrection", ChargeCorrection.Checked);
-                    command.Parameters.AddWithValue("@CustomerService", CustServ.Checked);
-                    command.Parameters.AddWithValue("@EscalationAndChurn", EscChurn.Checked);
-                    command.Parameters.AddWithValue("@Guarantors", Guarantors.Checked);
-                    command.Parameters.AddWithValue("@Software", Software.Checked);
-
-                    command.Parameters.AddWithValue("@Coding", Coding.Checked);
-                    command.Parameters.AddWithValue("@Denials", Denials.Checked);
-                    command.Parameters.AddWithValue("@FinancialAssistance", FinAssist.Checked);
-                    command.Parameters.AddWithValue("@MediareMedicaid", MDMC.Checked);
-                    command.Parameters.AddWithValue("@Workqueues", Workqueues.Checked);
-
-                    command.Parameters.AddWithValue("@Communications", Communications.Checked);
-                    command.Parameters.AddWithValue("@DocumentsScanning", DocsScanning.Checked);
-                    command.Parameters.AddWithValue("@HospitalAcctMaint", HAM.Checked);
-                    command.Parameters.AddWithValue("@Notes", Notes.Checked);
-
-                    command.Parameters.AddWithValue("@Coverage", Coverage.Checked);
-                    command.Parameters.AddWithValue("@ELMSProductivity", ELMSProductivity.Checked);
-                    command.Parameters.AddWithValue("@HIPAA", HIPAA.Checked);
-                    command.Parameters.AddWithValue("@PaymentPostProc", PaymentPostProc.Checked);
-
-                    try
+                    string connString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
+                    using (SqlConnection conn = new SqlConnection(connString))
                     {
-                        conn.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
-                        conn.Close();
+                        string updateQuery = "UPDATE tblTrainings SET " +
+                        "DateOfTraining=@DateOfTraining, PDH=@PDH, ContactHours=@ContactHours, " +
+                        "Description=@Description, AuthCertRef=@AuthCertsReferrals, CreditsRefunds=@CreditsRefunds, " +
+                        "EOB=@EOB, GAM=@GuarantorAcctMaint, Registration=@Registration, " +
+                        "ChargeCorrection=@ChargeCorrection, CustServ=@CustomerService, EscChurn=@EscalationAndChurn, " +
+                        "Guarantors=@Guarantors, Software=@Software, Coding=@Coding, Denials=@Denials, " +
+                        "FinAssist=@FinancialAssistance, MDMC=@MediareMedicaid, Workqueues=@Workqueues, " +
+                        "Communications=@Communications, DocsScanning=@DocumentsScanning, HAM=@HospitalAcctMaint, " +
+                        "Notes=@Notes, Coverage=@Coverage, ELMSProductivity=@ELMSProductivity, HIPAA=@HIPAA, " +
+                        "PaymentPostProc=@PaymentPostProc WHERE ID=@TrainingID";
 
-                        if (rowsAffected > 0)
-                        { // Update successful, redirect back to the view page
-                            lblMessage.Text = "Record has been updated";
-                        }
-                        else
+                        string capturedQuery = updateQuery;
+
+                        SqlCommand command = new SqlCommand(updateQuery, conn);
+
+                        // Set the parameters for the update query
+                        command.Parameters.AddWithValue("@DateOfTraining", DateTime.ParseExact(txtDateOfTraining.Text, "MM/dd/yyyy", CultureInfo.InvariantCulture));
+                        command.Parameters.AddWithValue("@PDH", Math.Round(float.Parse(txtPDH.Text), 2));
+                        command.Parameters.AddWithValue("@ContactHours", Math.Round(float.Parse(txtContactHours.Text), 2));
+                        command.Parameters.AddWithValue("@Description", txtDescription.Text);
+                        command.Parameters.AddWithValue("@TrainingID", Request.QueryString["ID"]);
+
+                        command.Parameters.AddWithValue("@AuthCertsReferrals", AuthCertRef.Checked);
+                        command.Parameters.AddWithValue("@CreditsRefunds", CreditsRefunds.Checked);
+                        command.Parameters.AddWithValue("@EOB", EOB.Checked);
+                        command.Parameters.AddWithValue("@GuarantorAcctMaint", GAM.Checked);
+                        command.Parameters.AddWithValue("@Registration", Registration.Checked);
+
+                        command.Parameters.AddWithValue("@ChargeCorrection", ChargeCorrection.Checked);
+                        command.Parameters.AddWithValue("@CustomerService", CustServ.Checked);
+                        command.Parameters.AddWithValue("@EscalationAndChurn", EscChurn.Checked);
+                        command.Parameters.AddWithValue("@Guarantors", Guarantors.Checked);
+                        command.Parameters.AddWithValue("@Software", Software.Checked);
+
+                        command.Parameters.AddWithValue("@Coding", Coding.Checked);
+                        command.Parameters.AddWithValue("@Denials", Denials.Checked);
+                        command.Parameters.AddWithValue("@FinancialAssistance", FinAssist.Checked);
+                        command.Parameters.AddWithValue("@MediareMedicaid", MDMC.Checked);
+                        command.Parameters.AddWithValue("@Workqueues", Workqueues.Checked);
+
+                        command.Parameters.AddWithValue("@Communications", Communications.Checked);
+                        command.Parameters.AddWithValue("@DocumentsScanning", DocsScanning.Checked);
+                        command.Parameters.AddWithValue("@HospitalAcctMaint", HAM.Checked);
+                        command.Parameters.AddWithValue("@Notes", Notes.Checked);
+
+                        command.Parameters.AddWithValue("@Coverage", Coverage.Checked);
+                        command.Parameters.AddWithValue("@ELMSProductivity", ELMSProductivity.Checked);
+                        command.Parameters.AddWithValue("@HIPAA", HIPAA.Checked);
+                        command.Parameters.AddWithValue("@PaymentPostProc", PaymentPostProc.Checked);
+
+
+                        try
                         {
-                            // No rows affected, display an error message
-                            lblMessage.Text = "No records were updated.";
+                            //Debug block
+                            foreach (SqlParameter parameter in command.Parameters)
+                            {
+                                capturedQuery = capturedQuery.Replace(parameter.ParameterName, parameter.Value.ToString());
+                            }
+
+                            // Display the captured query and parameter values
+                            queryLiteral.Text = capturedQuery;
+                            //End Debug
+
+                            conn.Open();
+                            int rowsAffected = command.ExecuteNonQuery();
+                            conn.Close();
+
+                            if (rowsAffected > 0)
+                            { // Update successful, redirect back to the view page
+                                lblMessage.Text = "Record has been updated - SQL Query: " + rowsAffected + "<br>";
+
+                                //Refresh the Page
+                                // Response.Redirect(Request.RawUrl);
+                            }
+                            else
+                            {
+                                // No rows affected, display an error message
+                                lblMessage.Text = "No records were updated.";
+                            }
                         }
-                    }
-                    catch (SqlException ex)
-                    {
-                        // An error occurred during the update process, display the error message
-                        lblMessage.Text = "Error: " + ex.Message;
+                        catch (SqlException ex)
+                        {
+                            // An error occurred during the update process, display the error message
+                            lblMessage.Text = "Error: " + ex.Message;
+                        }
                     }
                 }
-            }
-            else
-            {
-                // Display an error message if the user does not have sufficient security level
-                lblMessage.Text = "You do not have sufficient permissions to update this record.";
-            }
+                else
+                {
+                    // Display an error message if the user does not have sufficient security level
+                    lblMessage.Text = "You do not have sufficient permissions to update this record.";
+                }
+            
         }
-
         protected void btnAddAttendee_Click(object sender, EventArgs e)
         {
             int classID = Convert.ToInt32(Request.QueryString["ID"]);
