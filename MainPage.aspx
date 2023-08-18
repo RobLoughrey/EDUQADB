@@ -38,13 +38,14 @@
                     <asp:Button ID="btnSetDateM0" runat="server" Text="M-0" OnClick="btnSetDateM0_Click" CssClass="main-mini-button" />
                     <asp:Button ID="btnSetDateM1" runat="server" Text="M-1" OnClick="btnSetDateM1_Click" CssClass="main-mini-button" />
                 <br />
-                <% if (Session["sUserSecurity"].ToString() == "1" || Session["sUserSecurity"].ToString() == "2") { %>
-                        <asp:Button ID="btnMyTraining" runat="server" Text="My Training" CssClass="main-button" OnClick="btnMyTraining_Click" />
-                        <asp:Button ID="btnMyQA" runat="server" Text="My QA's" CssClass="main-button" OnClick="btnMyTraining_Click" />
+                
+                    <asp:Button ID="btnMyTraining" runat="server" Text="My Training" CssClass="main-button" OnClick="btnMyTraining_Click" />
+                    <asp:Button ID="btnMyQA" runat="server" Text="My QA's" CssClass="main-button" OnClick="btnMyTraining_Click" />
+                 <% if (Session["sUserSecurity"].ToString() == "1"|| Session["sUserSecurity"].ToString() == "2") { %>   
                     <h2><asp:Label ID="lblReportingButtons" runat="server" Text="Reporting"></asp:Label></h2>
-                        <asp:Button ID="btnSearchTrainings" runat="server" Text="Search Trainings" OnClick="btnSearchTrainings_Click" CssClass="main-button" />
-                        <asp:Button ID="btnSearchQA" runat="server" Text="Search QA's" OnClick="btnSearchQA_Click" CssClass="main-button" />
-                <% } %>            
+                    <asp:Button ID="btnSearchTrainings" runat="server" Text="Search Trainings" OnClick="btnSearchTrainings_Click" CssClass="main-button" />
+                    <asp:Button ID="btnSearchQA" runat="server" Text="Search QA's" OnClick="btnSearchQA_Click" CssClass="main-button" />
+                   <% } %>         
                 <% if (Session["sUserSecurity"].ToString() == "1"|| Session["sUserSecurity"].ToString() == "2") { %>
                     <h2><asp:Label ID="lblEDQAButtons" runat="server" Text="Edu & QA"></asp:Label></h2>
                         <asp:Button ID="btnAddTrain" runat="server" Text="New Training Event" OnClick="btnAddTrain_Click" CssClass="main-button" />

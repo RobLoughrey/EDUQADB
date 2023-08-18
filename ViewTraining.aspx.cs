@@ -25,7 +25,7 @@ namespace EDU_QA_DB
                     int id = Convert.ToInt32(Request.QueryString["ID"]);
                     string query = "SELECT T.DateofTraining, T.PDH, T.ContactHours, TT.Title, T.Description, T.AuthCertRef, T.CreditsRefunds, T.EOB, T.GAM, T.Registration, T.ChargeCorrection, T.CustServ, T.EscChurn, T.Guarantors, T.Software, T.Coding, T.Denials, T.FinAssist, T.MDMC, T.Workqueues, T.Communications, T.DocsScanning, T.HAM, T.Notes, T.Coverage, T.ELMSProductivity, T.HIPAA, T.PaymentPostProc, T.Type " +
                                     "FROM tblTrainings T " +
-                                    "INNER JOIN tblAttendance A ON T.ID = A.TrainingAttended " +
+                                    "LEFT JOIN tblAttendance A ON T.ID = A.TrainingAttended " + // Changed INNER JOIN to LEFT JOIN
                                     "INNER JOIN tblTrainingEventTitles TT ON T.Title = TT.ID " +
                                     "WHERE T.ID = @ID";
 
@@ -117,22 +117,40 @@ namespace EDU_QA_DB
 
                             TableCell nameCell = new TableCell();
                             nameCell.Text = name;
+                            nameCell.CssClass = "name-cell";
                             row.Cells.Add(nameCell);
 
-                            TableCell roleCell = new TableCell();
-                            roleCell.Text = role;
-                            row.Cells.Add(roleCell);
+                        TableCell roleCell = new TableCell();
 
-                            TableCell buttonCell = new TableCell();
-                            Button removeButton = new Button();
-                            removeButton.ID = "btnRemove_" + attendeeID;
-                            removeButton.Text = "Remove";
-                            removeButton.CssClass = "remove-button";
-                            removeButton.CommandArgument = attendeeID.ToString();
-                            removeButton.Click += RemoveAttendee_Click;
-                            buttonCell.Controls.Add(removeButton);
-                            row.Cells.Add(buttonCell);
+                        switch (role) //Convert the Numberic value of Role to the Text value
+                        {
+                            case "1":
+                                roleCell.Text = "Trainer";
+                                break;
+                            case "2":
+                                roleCell.Text = "Assistant Trainer";
+                                break;
+                            case "3":
+                                roleCell.Text = "Attendee";
+                                break;
+                            default:
+                                roleCell.Text = role; // Use the original role if not 1, 2, or 3
+                                break;
+                        }
+                        row.Cells.Add(roleCell);
 
+                        if (Convert.ToInt32(Session["sUserSecurity"]) == 1 || Convert.ToInt32(Session["sUserSecurity"]) == 2)
+                            {
+                                TableCell buttonCell = new TableCell();
+                                Button removeButton = new Button();
+                                removeButton.ID = "btnRemove_" + attendeeID;
+                                removeButton.Text = "Remove";
+                                removeButton.CssClass = "remove-button";
+                                removeButton.CommandArgument = attendeeID.ToString();
+                                removeButton.Click += RemoveAttendee_Click;
+                                buttonCell.Controls.Add(removeButton);
+                                row.Cells.Add(buttonCell);
+                            }
                             attendeesTable.Rows.Add(row);
                         }
 
@@ -195,8 +213,6 @@ namespace EDU_QA_DB
                         "Notes=@Notes, Coverage=@Coverage, ELMSProductivity=@ELMSProductivity, HIPAA=@HIPAA, " +
                         "PaymentPostProc=@PaymentPostProc WHERE ID=@TrainingID";
 
-                        string capturedQuery = updateQuery;
-
                         SqlCommand command = new SqlCommand(updateQuery, conn);
 
                         // Set the parameters for the update query
@@ -237,16 +253,6 @@ namespace EDU_QA_DB
 
                         try
                         {
-                            //Debug block
-                            foreach (SqlParameter parameter in command.Parameters)
-                            {
-                                capturedQuery = capturedQuery.Replace(parameter.ParameterName, parameter.Value.ToString());
-                            }
-
-                            // Display the captured query and parameter values
-                            queryLiteral.Text = capturedQuery;
-                            //End Debug
-
                             conn.Open();
                             int rowsAffected = command.ExecuteNonQuery();
                             conn.Close();

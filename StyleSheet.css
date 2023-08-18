@@ -109,6 +109,10 @@ legend {
     width: 145px;
 }
 
+.name-cell {
+    width: 200px;
+}
+
 .radio-label {
     cursor: pointer;
     display: inline-block;

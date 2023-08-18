@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ViewTraining.aspx.cs" Inherits="EDU_QA_DB.ViewTraining"%>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddTraining.aspx.cs" Inherits="EDU_QA_DB.AddTraining" %>
 
 <!DOCTYPE html>
 
@@ -38,27 +38,12 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="right-side-panel">
-            <h3>Attendees</h3>
-            <% if (Session["sUserSecurity"].ToString() == "1"|| Session["sUserSecurity"].ToString() == "2") { %> 
-                <h3>Add Attendee</h3>
-                <asp:DropDownList ID="ddlUsers" runat="server" DataSourceID="SqlDataSourceUsers" DataTextField="FullName" DataValueField="ID" AppendDataBoundItems="true">
-                    <asp:ListItem Text="Select a User" Value="" />
-                    </asp:DropDownList>
-                <asp:DropDownList ID="ddlRoles" runat="server">
-                    <asp:ListItem Text="Select a Role" Value="" />
-                    <asp:ListItem Text="Trainer" Value="1" />
-                    <asp:ListItem Text="Assit. Trainer" Value="2" />
-                    <asp:ListItem Text="Attendee" Value="3" Selected="True" />
-                </asp:DropDownList>
-                <asp:Button ID="btnAddAttendee" runat="server" Text="Add Attendee" OnClick="btnAddAttendee_Click" />
-             <% } %> 
-            <asp:PlaceHolder ID="phAttendees" runat="server">
-            </asp:PlaceHolder>
-        </div>
         <div class="formbody">
         <asp:Label ID="lblTitle" runat="server" Text="Title:"></asp:Label>
-        <asp:TextBox ID="txtTitle" runat="server" Width="600px"></asp:TextBox>
+        <asp:DropDownList ID="ddlTitles" runat="server" DataSourceID="SqlDataSourceTitles" DataTextField="Title" 
+            OnSelectedIndexChanged="ddlTitles_SelectedIndexChanged" AutoPostBack="true">
+            <asp:ListItem Text="Select a Training Event" Value="" />
+        </asp:DropDownList>
         <br />
         <asp:Label ID="lblDateofTraining" runat="server" Text="Date of Training:"></asp:Label>
         <asp:TextBox ID="txtDateOfTraining" runat="server" Width="80px"></asp:TextBox>
@@ -114,10 +99,11 @@
         <br />
         <br />
         <asp:Button ID="btnMainMenu" runat="server" Text="Main Menu" OnClick="btnMainMenu_Click" />
-        <% if (Session["sUserSecurity"].ToString() == "1"|| Session["sUserSecurity"].ToString() == "2") { %> 
-            <asp:Button ID="btnUpdate" runat="server" OnClick="btnUpdate_Click" Text="Update Event" />
-        <% } %> 
+        <asp:Button ID="btnSaveTraining" runat="server" Text="Save Training" OnClick="btnSaveTraining_Click" />
         </div>
+        <asp:SqlDataSource ID="SqlDataSourceTitles" runat="server" ConnectionString="<%$ ConnectionStrings:MyConnectionString %>"
+            SelectCommand="SELECT Title FROM tblTrainingEventTitles Where TrainingModality = 1">
+        </asp:SqlDataSource>
     </form>
     <br />
     <br />
@@ -148,7 +134,5 @@
     <asp:Label ID="lblMessage" runat="server" Text=""></asp:Label>
     <asp:Literal ID="queryLiteral" runat="server"></asp:Literal>
 </body>
-    <asp:SqlDataSource ID="SqlDataSourceUsers" runat="server" ConnectionString="<%$ ConnectionStrings:MyConnectionString %>"
-        SelectCommand="SELECT ID, LastName, FirstName, LastName + ', ' + FirstName AS FullName FROM tblUser ORDER BY FullName">
-    </asp:SqlDataSource>
 </html>
+

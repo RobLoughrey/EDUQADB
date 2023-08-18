@@ -60,15 +60,6 @@ namespace EDU_QA_DB
         protected global::System.Web.UI.WebControls.PlaceHolder phAttendees;
 
         /// <summary>
-        /// attendeesTable control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Table attendeesTable;
-
-        /// <summary>
         /// lblTitle control.
         /// </summary>
         /// <remarks>

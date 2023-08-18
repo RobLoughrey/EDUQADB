@@ -85,7 +85,7 @@ namespace EDU_QA_DB
             DateTime startDate = Convert.ToDateTime(txtStartDate.Text);
             DateTime endDate = Convert.ToDateTime(txtEndDate.Text);
 
-            DataTable dt = DatabaseHelper.GetMyTrainings(sUserID, startDate, endDate); // Use your existing method to get the DataTable
+            DataTable dt = DatabaseHelper.GetMyTrainings(sUserID, startDate, endDate); // Use Helper method to get the DataTable
 
             // Create the GridView using the helper method
             GridViewHelper myTrainingHelper = new GridViewHelper();
@@ -184,7 +184,7 @@ namespace EDU_QA_DB
         }
         protected void btnAddTrain_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("AddTraining.aspx");
         }
         protected void btnAddQA_Click(object sender, EventArgs e)
         {

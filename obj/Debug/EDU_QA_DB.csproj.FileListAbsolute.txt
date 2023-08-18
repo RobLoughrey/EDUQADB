@@ -199,8 +199,8 @@ C:\EDU_QA_DB\bin\Newtonsoft.Json.xml
 C:\EDU_QA_DB\bin\Antlr3.Runtime.pdb
 C:\EDU_QA_DB\bin\Microsoft.AspNet.FriendlyUrls.xml
 C:\EDU_QA_DB\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\EDU_QA_DB\obj\Debug\EDU_QA_DB.csproj.AssemblyReference.cache
 C:\EDU_QA_DB\obj\Debug\EDU_QA_DB.csproj.CoreCompileInputs.cache
 C:\EDU_QA_DB\obj\Debug\EDU_QA_DB.csproj.CopyComplete
 C:\EDU_QA_DB\obj\Debug\EDU_QA_DB.dll
 C:\EDU_QA_DB\obj\Debug\EDU_QA_DB.pdb
+C:\EDU_QA_DB\obj\Debug\EDU_QA_DB.csproj.AssemblyReference.cache
