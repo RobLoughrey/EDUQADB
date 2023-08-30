@@ -35,13 +35,15 @@
 
         /* Add more styles here */
     </style>
+
+
 </head>
 <body>
     <form id="form1" runat="server">
         <div class="formbody">
         <asp:Label ID="lblTitle" runat="server" Text="Title:"></asp:Label>
         <asp:DropDownList ID="ddlTitles" runat="server" DataSourceID="SqlDataSourceTitles" DataTextField="Title" 
-            OnSelectedIndexChanged="ddlTitles_SelectedIndexChanged" AutoPostBack="true">
+            DataValueField="ID" OnSelectedIndexChanged="ddlTitles_SelectedIndexChanged" AutoPostBack="true">
             <asp:ListItem Text="Select a Training Event" Value="" />
         </asp:DropDownList>
         <br />
@@ -102,7 +104,7 @@
         <asp:Button ID="btnSaveTraining" runat="server" Text="Save Training" OnClick="btnSaveTraining_Click" />
         </div>
         <asp:SqlDataSource ID="SqlDataSourceTitles" runat="server" ConnectionString="<%$ ConnectionStrings:MyConnectionString %>"
-            SelectCommand="SELECT Title FROM tblTrainingEventTitles Where TrainingModality = 1">
+            SelectCommand="SELECT ID, Title FROM tblTrainingEventTitles WHERE TrainingModality = 1 ORDER BY Title">
         </asp:SqlDataSource>
     </form>
     <br />

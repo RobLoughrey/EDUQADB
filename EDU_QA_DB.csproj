@@ -182,6 +182,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MSSQLEDQADB.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="PharmQAEdit.aspx" />
     <Content Include="QA.aspx" />
     <Content Include="ViewTraining.aspx" />
     <EntityDeploy Include="MSSQLEDQADB.edmx">
@@ -273,6 +274,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MSSQLEDQADB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="PharmQAEdit.aspx.cs">
+      <DependentUpon>PharmQAEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PharmQAEdit.aspx.designer.cs">
+      <DependentUpon>PharmQAEdit.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">

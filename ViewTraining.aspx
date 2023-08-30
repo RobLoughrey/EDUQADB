@@ -9,6 +9,7 @@
     <style>
         body {
             background-color: #00664F;
+            color: #FFCD00;
         }
         .formbody {
             font-family: Calibri, Arial, sans-serif;
